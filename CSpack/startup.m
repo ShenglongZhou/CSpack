@@ -2,5 +2,5 @@
  clc; close all; clear all; warning off
  addpath(genpath(pwd));
  
-  set(0,'defaultaxesfontsize',10);
-  set(0,'defaulttextfontsize',10);
+ set(0,'defaultaxesfontsize',10);
+ set(0,'defaulttextfontsize',10);
