@@ -12,7 +12,7 @@ To implement this solver, please
 ## NL0R
     S. Zhou, L. Pan and N. Xiu, 
     Newton Method for l_0 Regularized Optimization,
-    Numerical Algorithms, 2021
+    Numerical Algorithms, DOI: 10.1007/s11075-021-01085-x, 2021
 ## IIHT
     L. Pan, S. Zhou, N. Xiu and H. Qi, 
     A convergent iterative hard thresholding for nonnegative sparsity optimization, 
