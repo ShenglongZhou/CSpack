@@ -1,14 +1,13 @@
 # CSpack
 This package offers 4 solvers for compressive sensing problems 
 
-To implement this solver, please 
-
+To implement this solver, please
   * Step 1: run startup.m first to add the path;
   * Step 2: run demonXXXX.m to solve different problems 
 
 ## NHTP 
     S. Zhou, N. Xiu and H. Qi, 
-    Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit, 
+    [Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit](https://jmlr.org/papers/v22/19-026.html), 
     Journal of Machine Learning Research, 22(12):1-45, 2021
 ## NL0R
     S. Zhou, L. Pan and N. Xiu, 
