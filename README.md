@@ -19,7 +19,7 @@ To implement this solver, please
     Pacific Journal of  Optimization, 13(2), 325-353, 2017
 ## MIRL1 
     S. Zhou, N. Xiu, Y. Wang, L. Kong and H. Qi, 
-    A Null-space-based weighted  l1 minimization approach to compressed sensing, 
+    A Null-space-based weighted l1 minimization approach to compressed sensing, 
     Information and Inference: A Journal of the IMA, vol. 5(1): 76-102, 2016.
 
 Please give credits to them if you use the code for your research.
