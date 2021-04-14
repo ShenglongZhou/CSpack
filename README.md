@@ -7,7 +7,7 @@ To implement this solver, please
 
 ## NHTP 
     S. Zhou, N. Xiu and H. Qi, 
-    *Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit*, 
+    Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit, 
     Journal of Machine Learning Research, 22(12):1-45, 2021
 ## NL0R
     S. Zhou, L. Pan and N. Xiu, 
