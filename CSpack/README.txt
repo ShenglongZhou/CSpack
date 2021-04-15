@@ -1,7 +1,7 @@
 To implement this solver, please 
 
-    [1] run startup.m first to add the path;
-    [2] run demonXXXX.m to solve different problems
+    Step 1. run startup.m first to add the path 
+    Step 2. run demonXXXX.m to solve different problems
 
 This package contains 4 solvers for compressive sensing problems 
 based on the algorithms described in the following papers:
