@@ -8,7 +8,7 @@ s       = ceil(0.05*n);
 noS     = 100;
 switch  test
 case 1; sm = 10:2:38;
-case 2; sm = linspace(0.05,0.25,12);
+case 2; sm = linspace(0.06,0.28,12);
 end    
     
 SucRate     = [];
