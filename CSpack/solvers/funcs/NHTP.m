@@ -104,7 +104,7 @@ for iter = 1:itmax
     Error(iter) = xtaus + FxT;    
     end
      
-    if display 
+    if disp
     fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',iter,Error(iter),obj,toc(t0)); 
     end
              
