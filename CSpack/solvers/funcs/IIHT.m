@@ -1,20 +1,19 @@
 function out = IIHT(data,n,s,pars)
-% A solver for sparsity constrained model:
-%           min f(x),  s.t. ||x||_0<=s,
-% or sparsity and non-negative constrained model:
-%           min f(x),  s.t. ||x||_0<=s, x>=0,
-% where f: R^n->R and s<<n.
-%
-% Written by 16/01/2016, Shenglong Zhou
-%
-%
+% A solver for sparsity constrained CS:
+%           min_{x\in R^n} 0.5||Ax-b||^2,  s.t. ||x||_0<=s,
+% or sparsity and non-negative constrained CS:
+%           min_{x\in R^n} 0.5||Ax-b||^2,  s.t. ||x||_0<=s, x>=0,
+% where s is the given sparsity, which is << n.  
+%       A\in\R{m by n} the measurement matrix
+%       b\in\R{m by 1} the observation vector 
+% ========================================================================= 
 % Inputs:
-%     data    : A triple structure (data.A, data.At, data.b) (required)
-%               data.A, the measurement matrix, or a function handle @(x)A(x);
-%               data.At = data.A',or a function handle @(x)At(x);
-%               data.b, the observation vector 
-%     n       : Dimension of the solution x  (required)
-%     s       : Sparsity level of the solution x, an integer in (0,n] (required)          
+%     data    : A structure (required)
+%               (data.A, data.b) if A is a matrix 
+%               (data.A, data.b, data.At) if A is a function handle
+%               i.e., Ax = data.A(x); A'y = data.At(y); 
+%     n       : Dimension of the solution x, (required)
+%     s       : Sparsity level of x, an integer between 1 and n-1, (required)           
 %     pars:     Parameters are all OPTIONAL
 %               pars.neg    --  = 0. Compute sparsity constrained model (default)
 %                               = 1. Compute sparsity and non-negative constrained model 
@@ -29,16 +28,33 @@ function out = IIHT(data,n,s,pars)
 %     out.sp:            Sparsity level of out.sol
 %     out.time           CPU time
 %     out.iter:          Number of iterations
-%
+% ========================================================================= 
 % This solver was created based on the algorithm proposed by  
 % Pan, L., Zhou, S., Xiu, N. & Qi, H.D. (2017). A convergent iterative hard 
 % thresholding for nonnegative sparsity optimization. Pacific Journal of 
 % Optimization, 13(2), 325-353.
 % Send your comments and suggestions to <slzhou2021@163.com> 
 % Warning: Accuracy may not be guaranteed !!!!! 
+% ========================================================================= 
+
 warning off;
 
 if nargin<3; error('Imputs are not enough!\n'); end
+if ~isfield(data,'A')
+    fprintf('<data.A> is missing, unable to run the solver ...');
+    return
+else
+    if  isa(data.A,'function_handle') && ~isfield(data,'At') 
+        fprintf('<data.At> is missing, unable to run the solver ...');
+        return
+    end
+end
+
+if  ~isfield(data,'b')
+    fprintf('<data.b> is missing, unable to run the solver ...');
+    return
+end
+
 if nargin<4; pars = struct([]); end
 if isfield(pars,'disp');  disp   = pars.disp; else; disp = 1;        end
 if isfield(pars,'maxit'); maxit  = pars.maxit;  else; maxit  = 5e3;      end
@@ -129,24 +145,23 @@ function [out1,out2] = compressed_sensing(x,data)
 % where data.At = data.A'    
     if  isa(data.A, 'function_handle')  
         Axb  = data.A(x)-data.b;
+        out1 = sum(Axb.*Axb)/2;        % objective function 
+        if  nargout == 2 
+            out2 = data.At(Axb);       % gradien     
+        end
     else
-        Tx   = find(x);
-        if ~isempty(Tx)
-        Axb  = data.A(:,Tx)*x(Tx)-data.b;
+        Tx  = find(x);
+        if  isempty(Tx)
+            Axb  = - data.b;
         else
-        Axb  =  -data.b;
+            Axb  = data.A(:,Tx)*x(Tx)-data.b;
+        end
+        out1 = sum(Axb.*Axb)/2;         % objective function 
+        if  nargout == 2 
+            out2 = (Axb'*data.A)';      % gradien      
         end
     end
-    
-    out1 = sum(Axb.*Axb)/2; % objective function 
-    
-    if  nargout>1 
-        if  isa(data.At, 'function_handle')  
-            out2 = data.At(Axb);     % gradien  
-        else
-            out2 = data.At*Axb;      % gradien      
-        end
-    end
-
 end
+
+
 
