@@ -44,13 +44,15 @@ Please give credits to them if you use the code for your research.
 %
 %         min_{x\in R^n} 0.5||Ax-b||^2 + mu||w.*x||_1
 %
-% where s << n is the given sparsity and lambda>0, mu>0.  
+% where s << n is the given sparsity and lambda>0, mu>0 
+%       A\in\R{m by n} the measurement matrix
+%       b\in\R{m by 1} the observation vector 
 % =========================================================================
 % Inputs:
-%   data  : A triple structure (data.A, data.At, data.b) (REQUIRED)
-%           data.A, the measurement matrix, or a function handle @(x)A(x)
-%           data.At = data.A',or a function handle @(x)At(x)
-%           data.b, the observation vector 
+%   data  : A structure (REQUIRED)
+%           (data.A, data.b) if A is a matrix 
+%           (data.A, data.b, data.At) if A is a function handle
+%           i.e., Ax = data.A(x); A'y = data.At(y); 
 %   n     : Dimension of the solution x, (REQUIRED)
 %   solver: a text string, can be one of {'NHTP','NL0R','IIHT','MILR1'}
 %           ------------------------------------------------------------
@@ -63,14 +65,12 @@ Please give credits to them if you use the code for your research.
 %   pars  : pars.x0    --  Starting point of x (default, zeros(n,1))
 %           pars.s     --  Sparsity of x, an integer between 1 and n-1  
 %                          This is REQUIRED for 'NHTP' and 'IIHT'
-%           pars.tau   --  A positive scalar (default, 1) 
-%                          This is vaild for 'NHTP' and 'NL0R'
-%           pars.x0    --  Starting point of x (default, zeros(n,1))
+%           pars.eta   --  A positive scalar for 'NHTP' (default, 1)                       
 %           pars.disp  --  Results of each step are displayed or not (default,1)
-%           pars.draw  --  A graph is drawn or not (default,0) 
 %           pars.maxit --  Maximum number of iterations (default,2000) 
 %           pars.tol   --  Tolerance of the halting condition (default,1e-6)
 %           ------------------Particular for NL0R -------------------------
+%           pars.tau   --  A positive scalar for 'NL0R' (default, 1)  
 %           pars.lam   --  An initial penalty parameter (default, 0.1)
 %           pars.obj   --  A predefined lower bound of f(x), (default,1e-20)
 %           pars.rate  --  A positive scalar to adjust lam, (default, 0.5) 
@@ -93,17 +93,16 @@ Please give credits to them if you use the code for your research.
 % =========================================================================
 clc; clear; close all;
 
-n       = 20000;  
+n       = 10000;  
 m       = ceil(n/4); 
-s       = ceil(0.05*n); 
+s       = ceil(0.01*n); 
 
 % generate the testing data (data.A, data.At, data.b)
 I0      = randperm(n); 
 I       = I0(1:s);
 xopt    = zeros(n,1);
 xopt(I) = randn(s,1); 
-data.A  = randn(m,n)/sqrt(m);
-data.At = data.A';                
+data.A  = randn(m,n)/sqrt(m);           
 data.b  = data.A(:,I)*xopt(I);  
 
 % choose one of the following four solvers                              
@@ -115,4 +114,4 @@ out     = CSsolver(data,n,solver{1},pars);
 fprintf(' CPU time:     %.3fsec\n',out.time);
 fprintf(' Objective:    %.2e\n', out.obj);
 fprintf(' Sample size:  %dx%d\n', m,n);
-ReoveryShow(xopt,out.sol,[1000, 550,500 200],1)
+ReoveryShow(xopt,out.sol,[1000 550 500 250],1)
