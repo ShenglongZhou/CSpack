@@ -1,4 +1,4 @@
-function Out = CSsolver(data,n,solver,pars)
+function out = CSsolver(data,n,solver,pars)
 % This solver solves compressive sensing (CS) in one of the following forms:
 %
 % 1) The sparsity constrained compressive sensing (SCCS): 
@@ -13,13 +13,15 @@ function Out = CSsolver(data,n,solver,pars)
 %
 %         min_{x\in R^n} 0.5||Ax-b||^2 + mu||w.*x||_1
 %
-% where s << n is the given sparsity and lambda>0, mu>0.  
+% where s << n is the given sparsity and lambda>0, mu>0 
+%       A\in\R{m by n} the measurement matrix
+%       b\in\R{m by 1} the observation vector 
 % =========================================================================
 % Inputs:
-%   data  : A triple structure (data.A, data.At, data.b) (REQUIRED)
-%           data.A, the measurement matrix, or a function handle @(x)A(x)
-%           data.At = data.A',or a function handle @(x)At(x)
-%           data.b, the observation vector 
+%   data  : A structure (REQUIRED)
+%           (data.A, data.b) if A is a matrix 
+%           (data.A, data.b, data.At) if A is a function handle
+%           i.e., Ax = data.A(x); A'y = data.At(y); 
 %   n     : Dimension of the solution x, (REQUIRED)
 %   solver: a text string, can be one of {'NHTP','NL0R','IIHT','MILR1'}
 %           ------------------------------------------------------------
@@ -32,27 +34,25 @@ function Out = CSsolver(data,n,solver,pars)
 %   pars  : pars.x0    --  Starting point of x (default, zeros(n,1))
 %           pars.s     --  Sparsity of x, an integer between 1 and n-1  
 %                          This is REQUIRED for 'NHTP' and 'IIHT'
-%           pars.tau   --  A positive scalar (default, 1) 
-%                          This is vaild for 'NHTP' and 'NL0R'
-%           pars.x0    --  Starting point of x (default, zeros(n,1))
+%           pars.eta   --  A positive scalar for 'NHTP' (default, 1)                       
 %           pars.disp  --  Results of each step are displayed or not (default,1)
-%           pars.draw  --  A graph is drawn or not (default,0) 
 %           pars.maxit --  Maximum number of iterations (default,2000) 
 %           pars.tol   --  Tolerance of the halting condition (default,1e-6)
 %           ------------------Particular for NL0R -------------------------
+%           pars.tau   --  A positive scalar for 'NL0R' (default, 1)  
 %           pars.lam   --  An initial penalty parameter (default, 0.1)
-%           pars.obj   --  A predefined lower bound of f(x), (default,1e-20)
-%           pars.rate  --  A positive scalar to adjust lam, (default, 0.5) 
+%           pars.obj   --  A predefined lower bound of f(x),(default,1e-20)
+%           pars.rate  --  A positive scalar to adjust lam, (default,  0.5) 
 %           ------------------Particular for IIHT -------------------------
 %           pars.neg   --  Compute SCCS (default, 0)
-%                          Compute SCCS with a non-negative constraint, x>=0
+%                          Compute SCCS with a non-negative constraint,x>=0
 % =========================================================================
 % Outputs:
-%     Out.sol:   The sparse solution x
-%     Out.sp:    Sparsity level of Out.sol
-%     Out.time:  CPU time
-%     Out.iter:  Number of iterations
-%     Out.obj:   Objective function value at Out.sol 
+%     out.sol:   The sparse solution x
+%     out.sp:    Sparsity level of Out.sol
+%     out.time:  CPU time
+%     out.iter:  Number of iterations
+%     out.obj:   Objective function value at Out.sol 
 % =========================================================================
 % Send your comments and suggestions to <slzhou2021@163.com> 
 % Warning: Accuracy may not be guaranteed !!!!! ! 
@@ -65,6 +65,21 @@ switch  nargin
          return;
     case 2
          solver = 'NL0R';
+end
+
+if ~isfield(data,'A')
+    fprintf('<data.A> is missing, unable to run the solver ...');
+    return
+else
+    if  isa(data.A,'function_handle') && ~isfield(data,'At') 
+        fprintf('<data.At> is missing, unable to run the solver ...');
+        return
+    end
+end
+
+if  ~isfield(data,'b')
+    fprintf('<data.b> is missing, unable to run the solver ...');
+    return
 end
  
 if ismember(solver, {'NHTP','IIHT'})
@@ -81,14 +96,12 @@ if ismember(solver, {'NHTP','IIHT'})
 end
 
 Solver = str2func(solver);   
-if ~isfield(pars,'disp');  pars.disp = 1; end
-if ~isfield(pars,'draw');  pars.draw = 0; end
-
+if ~isfield(pars,'disp');  pars.disp = 1; end 
 switch solver
-    case 'NHTP' ; Out = Solver(data,n,ceil(pars.s),pars);
-    case 'IIHT' ; Out = Solver(data,n,ceil(pars.s),pars);
-    case 'NL0R' ; Out = Solver(data,n,pars);
-    case 'MIRL1'; Out = Solver(data,n,pars);
+    case 'NHTP' ; out = Solver(data,n,ceil(pars.s),pars);
+    case 'IIHT' ; out = Solver(data,n,ceil(pars.s),pars);
+    case 'NL0R' ; out = Solver(data,n,pars);
+    case 'MIRL1'; out = Solver(data,n,pars);
 end
 
 end
