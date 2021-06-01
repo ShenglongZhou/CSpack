@@ -1,4 +1,4 @@
-function  Out= MIRL1(Data,n,pars)
+function  Out= MIRL1(data,n,pars)
 
 % A solver for reweighted L1-minimization model:
 %
@@ -7,45 +7,64 @@ function  Out= MIRL1(Data,n,pars)
 % Written by 05/05/2015, Shenglong Zhou
 %
 % Note: yall1 solver is taken from http://yall1.blogs.rice.edu/
-
-% --- Inputs:
-%     data --- A triple structure (data.A, data.At, data.b) (required)
-%              data.A, the measurement matrix, or a function handle @(x)A(x) 
-%              data.At = data.A',or a function handle @(x)At(x) 
-%              data.b, the observation vector 
+% ========================================================================= 
+% Inputs:
+%     data --- A structure (required)
+%               (data.A, data.b) if A is a matrix 
+%               (data.A, data.b, data.At) if A is a function handle
+%               i.e., Ax = data.A(x); A'y = data.At(y); 
 %     n    --- Dimension of the solution x (required)
 %     pars --- a structure with fields:
 %              pars.tol    -- tolerance for yall1 solver (default, 1e-4)
 %              pars.rate   -- for updating the sparsity (default,1/(log(n/m)) 
 %              pars.s      -- for the given sparsity level if it is known in advance 
 %              pars.disp   -- display results in each iteration, (default, 1)
-% --- Outputs:
+% Outputs:
 %     Out ---  a structure with fields:
 %              Out.sol     -- recovered solution, an n x 1  order vector 
 %              Out.sp      -- Sparsity level of Out.sol
 %              Out.iter    -- number of total iterations 
 %              Out.time    -- total computational time 
 %              Out.obj     -- Objective function value at Out.sol  
-%
+% ========================================================================= 
 % This code is programmed based on the algorithm proposed in 
 % "S. Zhou, N. Xiu, Y. Wang, L. Kong and H. Qi, 
 % A Null-space-based weighted l1 minimization approach to compressed sensing, 
 % Information and Inference: A Journal of the IMA, 5(1),76-102, 2016."
 % Send your comments and suggestions to <slzhou2021@163.com> 
 % Warning: Accuracy may not be guaranteed !!!!! 
+% ========================================================================= 
 
 if nargin<2
-   error('Inputs are not enough')
+   error('Inputs are not enough...')
 elseif nargin==2
-   pars=[];
+   pars = [];
 end
 
-A           = Data.A;
-At          = Data.At;
-b           = Data.b;
-m           = length(b);                 
-[itmax,rate,tol,disp,mu,i0,theta]...
-            = Get_parameters(m,n,At,b,pars);     
+if ~isfield(data,'A')
+    fprintf('<data.A> is missing, unable to run the solver ...');
+    return
+else
+    if  isa(data.A,'function_handle') && ~isfield(data,'At') 
+        fprintf('<data.At> is missing, unable to run the solver ...');
+        return
+    end
+end
+if  ~isfield(data,'b')
+    fprintf('<data.b> is missing, unable to run the solver ...');
+    return
+end
+
+
+A           = data.A; 
+b           = data.b;
+m           = length(b);    
+if  isa(A,'function_handle')
+    mu = 0.01*max(abs(data.At(b)));
+else    
+    mu = 0.01*max(abs(b'*A));  
+end
+[itmax,rate,tol,disp,i0,theta] = Get_parameters(m,n,mu,pars);     
 x           = zeros(n,1);               
 w           = ones(n,1);
 opts_ya.tol = tol;
@@ -53,10 +72,11 @@ t_start     = tic;
 
 if isa(A,'function_handle')
     Aya.times= @(x)A(x);
-    Aya.trans= @(x)At(x);
+    Aya.trans= @(x)data.At(x);
 else
     Aya = A;
 end
+clear Data;
 
 if disp
    fprintf(' Start to run the solver --  MIRL1 \n'); 
@@ -125,18 +145,14 @@ end
 
 
 %------------------Set Parameters----------------------------------------
-function [itmax,rate,tol,disp,mu,i0,theta] = Get_parameters(m,n,At,b,opts)
+function [itmax,rate,tol,disp,i0,theta] = Get_parameters(m,n,mu,opts)
 
 if n<1000;      itmax=1000; else;  itmax = 100;          end
 if log(n/m)<=1; rate=.7;    else;  rate  = 1/(log(n/m)); end 
 if isfield(opts,'rate');    rate   = opts.rate;          end
 if isfield(opts,'tol');     tol    = opts.tol;  else;  tol = 1e-4; end
 if isfield(opts,'disp');    disp   = opts.disp; else;  disp = 1;    end 
-if isa(At,'function_handle')
-   mu = 0.01*max(abs(At(b)));
-else    
-   mu = 0.01*max(abs(At*b));  
-end
+
 i0    = ceil(m/(4*log(n/m))); 
 theta = mu*m/n/10;
 
