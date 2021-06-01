@@ -25,8 +25,7 @@ for j       = 1:length(sm)
         I       = I0(1:s);
         xopt    = zeros(n,1);
         xopt(I) = randn(s,1); 
-        data.A  = normalization(A, 3); 
-        data.At = data.A';                
+        data.A  = normalization(A, 3);              
         data.b  = data.A(:,I)*xopt(I);   
         
         pars.s  = s;
