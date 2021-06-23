@@ -28,7 +28,7 @@ Please give credits to them if you use the code for your research.
 ===========================================================================
 % The citation of the solver <CSsolver> takes the form of
 %
-%                out = CSsolver(data,n,solver,pars)
+%         out = CSsolver(data,n,solver,pars)
 %
 % It solves compressive sensing (CS) in one of the following forms:
 %
