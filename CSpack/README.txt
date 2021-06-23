@@ -114,4 +114,4 @@ out     = CSsolver(data,n,solver{1},pars);
 fprintf(' CPU time:     %.3fsec\n',out.time);
 fprintf(' Objective:    %.2e\n', out.obj);
 fprintf(' Sample size:  %dx%d\n', m,n);
-ReoveryShow(xopt,out.sol,[1000 550 500 250],1)
+RecoverShow(xopt,out.sol,[1000 500 500 250],1)
