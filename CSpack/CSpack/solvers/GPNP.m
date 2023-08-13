@@ -17,7 +17,6 @@ function out = GPNP(data,n,s,pars)
 %     pars:     Parameters are all OPTIONAL
 %               pars.x0      --  Starting point of x, pars.x0=zeros(n,1) (default)
 %               pars.disp    --  Display or not results for each iteration (default, 1)
-%               pars.draw    --  A graph will be drawn or not (default,1) 
 %               pars.maxit   --  Maximum number of iterations (default,2000) 
 %               pars.tol     --  Tolerance of the halting condition (default,1e-6)
 %               pars.obj   --  The provided objective (default 1e-20)
@@ -157,7 +156,7 @@ for iter = 1:maxit
     end
     
     % Stop criteria  
-	error     = Fnorm(gx(Tu)); 
+    error     = Fnorm(gx(Tu)); 
     obj       = sqrt(fx);
     OBJ       = [OBJ(2:end); obj];
     if disp  
