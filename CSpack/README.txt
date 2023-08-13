@@ -30,11 +30,7 @@ MIRL1-----------------------------------------------------------------------
 Please give credit to them if you use the code for your research.
 
 ===========================================================================
-% The citation of the solver <CSsolver> takes the form of
-%
-%         out = CSsolver(data,n,solver,pars)
-%
-% It solves compressive sensing (CS) in one of the following forms:
+% This solver solves compressive sensing (CS) in one of the following forms:
 %
 % 1) The sparsity constrained compressive sensing (SCCS): 
 %
@@ -59,16 +55,16 @@ Please give credit to them if you use the code for your research.
 %           i.e., Ax = data.A(x); A'y = data.At(y); 
 %   n     : Dimension of the solution x, (REQUIRED)
 %   solver: a text string, can be one of {'NHTP','NL0R','IIHT','MILR1'}
-%           ------------------------------------------------------------
-%                    |   'NHTP'   |   'NL0R'   |   'IIHT'   |   'MIRL1'   
-%           ------------------------------------------------------------
-%           Model    |    SCCS    |    L0CS    |     SCCS   |    RLCS     
-%           Method   |  2nd-order |  2nd-order |  1st-order |  1st-order  
-%           Sparsity |  required  |  optional  |  required  |  optional
-%           ------------------------------------------------------------             
+%           --------------------------------------------------------------------------
+%                    |   'NHTP'   |  'GPNP'    |   'NL0R'   |   'IIHT'   |   'MIRL1'   
+%           --------------------------------------------------------------------------
+%           Model    |    SCCS    |   SCCS     |    L0CS    |     SCCS   |    RLCS     
+%           Method   |  2nd-order |  2nd-order |  2nd-order |  1st-order |  1st-order  
+%           Sparsity |  required  |  required  |  optional  |  required  |  optional
+%           --------------------------------------------------------------------------             
 %   pars  : pars.x0    --  Starting point of x (default, zeros(n,1))
 %           pars.s     --  Sparsity of x, an integer between 1 and n-1  
-%                          This is REQUIRED for 'NHTP' and 'IIHT'
+%                          This is REQUIRED for 'NHTP', 'GPNP' and 'IIHT'
 %           pars.eta   --  A positive scalar for 'NHTP' (default, 1)                       
 %           pars.disp  --  Results of each step are displayed or not (default,1)
 %           pars.maxit --  Maximum number of iterations (default,2000) 
@@ -76,18 +72,18 @@ Please give credit to them if you use the code for your research.
 %           ------------------Particular for NL0R -------------------------
 %           pars.tau   --  A positive scalar for 'NL0R' (default, 1)  
 %           pars.lam   --  An initial penalty parameter (default, 0.1)
-%           pars.obj   --  A predefined lower bound of f(x), (default,1e-20)
-%           pars.rate  --  A positive scalar to adjust lam, (default, 0.5) 
+%           pars.obj   --  A predefined lower bound of f(x),(default,1e-20)
+%           pars.rate  --  A positive scalar to adjust lam, (default,  0.5) 
 %           ------------------Particular for IIHT -------------------------
 %           pars.neg   --  Compute SCCS (default, 0)
-%                          Compute SCCS with a non-negative constraint, x>=0
+%                          Compute SCCS with a non-negative constraint,x>=0
 % =========================================================================
 % Outputs:
-%     Out.sol:   The sparse solution x
-%     Out.sp:    Sparsity level of Out.sol
-%     Out.time:  CPU time
-%     Out.iter:  Number of iterations
-%     Out.obj:   Objective function value at Out.sol 
+%     out.sol:   The sparse solution x
+%     out.sp:    Sparsity level of Out.sol
+%     out.time:  CPU time
+%     out.iter:  Number of iterations
+%     out.obj:   Objective function value at Out.sol 
 % =========================================================================
 % Send your comments and suggestions to <slzhou2021@163.com> 
 % Warning: Accuracy may not be guaranteed !!!!! ! 
@@ -110,7 +106,7 @@ data.A  = randn(m,n)/sqrt(m);
 data.b  = data.A(:,I)*xopt(I);  
 
 % choose one of the following four solvers                              
-solver  = {'NHTP', 'NL0R', 'IIHT', 'MIRL1'};
+solver  = {'NHTP', 'GPNP', 'NL0R', 'IIHT', 'MIRL1'};
 pars.s  = s; % required for solvers 'NHTP' and 'IIHT' 
 out     = CSsolver(data,n,solver{1},pars);
 
