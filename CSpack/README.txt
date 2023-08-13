@@ -7,15 +7,19 @@ This package contains 4 solvers for compressive sensing problems
 based on the algorithms described in the following papers:
 
 NHTP------------------------------------------------------------------------
-    S. Zhou, N. Xiu and H. Qi, 
-    Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit, 
+    S. Zhou, N. Xiu, and H. Qi, 
+    Global and quadratic Convergence of Newton hard-thresholding pursuit, 
     Journal of Machine Learning Research, 22(12):1-45, 2021
+GPNP------------------------------------------------------------------------
+    S. Zhou,
+    Gradient projection Newton pursuit for sparsity constrained optimization, 
+    Applied and Computational Harmonic Analysis, 61:75-100, 2022
 NL0R------------------------------------------------------------------------
-    S. Zhou, L. Pan and N. Xiu, 
-    Newton Method for l_0 Regularized Optimization,
+    S. Zhou, L. Pan, and N. Xiu, 
+    Newton method for l_0 regularized optimization,
     Numerical Algorithms, 2021
 IIHT------------------------------------------------------------------------
-    L. Pan, S. Zhou, N. Xiu and H. Qi, 
+    L. Pan, S. Zhou, N. Xiu, and H. Qi, 
     A convergent iterative hard thresholding for nonnegative sparsity optimization, 
     Pacific Journal of  Optimization, 13(2), 325-353, 2017
 MIRL1-----------------------------------------------------------------------
@@ -23,7 +27,7 @@ MIRL1-----------------------------------------------------------------------
     A Null-space-based weighted  l1 minimization approach to compressed sensing, 
     Information and Inference: A Journal of the IMA, vol. 5(1): 76-102, 2016.
 
-Please give credits to them if you use the code for your research.
+Please give credit to them if you use the code for your research.
 
 ===========================================================================
 % The citation of the solver <CSsolver> takes the form of
