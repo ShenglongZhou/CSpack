@@ -83,9 +83,9 @@ FNorm   = @(x)norm(x)^2;
 
 if disp 
    fprintf(' Start to run the solver -- NL0R \n'); 
-   fprintf(' ----------------------------------------------\n');
-   fprintf(' Iter       ObjVal       CPUTime     Sparsity\n'); 
-   fprintf(' ----------------------------------------------\n');
+   fprintf(' ------------------------------------------------\n');
+   fprintf(' Iter       Sparsity       ObjVal         CPUTime \n'); 
+   fprintf(' ------------------------------------------------\n');
 end
 
 % Initial check for the starting point
@@ -136,7 +136,7 @@ for iter  = 1:itmax
     Err(iter) = FxT/sqrt(n); 
     Nzx(iter) = nx;
     if  disp  
-        fprintf('%4d       %6.2e     %6.3fsec     %6d\n',iter, obj, toc(t0), nx); 
+        fprintf('%4d       %8d       %6.2e      %6.3fsec\n',iter, nx, obj, toc(t0)); 
     end
     
     % Stopping criteria   
@@ -256,12 +256,12 @@ out.obj     = obj;
 
 
 if disp 
-   fprintf(' ----------------------------------------------\n');
+   fprintf(' ------------------------------------------------\n');
    normgrad    = FNorm(g);
    if normgrad < 1e-10
       fprintf(' A global optimal solution might be found\n');
       fprintf(' because of ||gradient|| = %5.2e!\n',normgrad); 
-      fprintf(' ----------------------------------------------\n');
+      fprintf(' ------------------------------------------------\n');
    end
 end
 

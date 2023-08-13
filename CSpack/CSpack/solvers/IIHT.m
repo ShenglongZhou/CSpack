@@ -72,10 +72,10 @@ xo     = zeros(n,1);
 
 % main body
 if disp 
-fprintf(' Start to run the sover -- IIHT \n'); 
-fprintf('--------------------------------------------\n');
-fprintf(' Iter     Error         ObjVal        Time \n'); 
-fprintf('--------------------------------------------\n');
+    fprintf(' Start to run the sover -- IIHT \n'); 
+    fprintf(' ------------------------------------------------\n');
+    fprintf(' Iter       Error          ObjVal         CPUTime \n'); 
+    fprintf(' ------------------------------------------------\n');
 end
 [f,g]    = func(x);
 scale    = (max(f,norm(g))>n); 
@@ -110,8 +110,8 @@ for iter = 1:maxit
     
     % Stop criteria 
 	residual = scal*norm(gs(T))/max(1,norm(mx)); 
-    if disp && mod(iter,1)==0
-       fprintf('%4d     %5.2e      %5.2e     %5.2fsec\n',iter,residual,fs*scal,toc(t0)); 
+    if disp && mod(iter,1)==0 
+       fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',iter,residual,fs*scal,toc(t0));
     end
  
 	if residual<tol || abs(fs-fx_old)<1e-12*(1+abs(fs))  
@@ -121,7 +121,7 @@ for iter = 1:maxit
 end
 
 if disp
-fprintf('--------------------------------------------\n');
+   fprintf(' ------------------------------------------------\n');
 end
 
 out.sol  = x;
@@ -134,6 +134,7 @@ normg    = norm(g)*scal;
 if  normg<1e-5 && disp
     fprintf(' A global optimal solution might be found\n');
     fprintf(' because of ||g(x)||=%5.2e!\n',normg);  
+    fprintf(' ------------------------------------------------\n');
 end
 end
 
