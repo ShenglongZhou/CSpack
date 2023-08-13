@@ -14,7 +14,7 @@ end
 SucRate     = [];
 pars.disp   = 0;
 for j       = 1:length(sm)
-    rate    = 0; 
+    rate    = [0; 0]; 
     switch  test
     case 1; s   = sm(j);
     case 2; m   = ceil(sm(j)*n);
@@ -29,19 +29,22 @@ for j       = 1:length(sm)
         data.b  = data.A(:,I)*xopt(I);   
         
         pars.s  = s;
-        out     = CSsolver(data,n,'NHTP',pars); clc; SucRate     
-        rate    = rate + (norm(out.sol-xopt)/norm(xopt)<1e-2); 
+        out     = CSsolver(data,n,'NHTP',pars); clc; SucRate   
+        rate(1) = rate(1) + (norm(out.sol-xopt)/norm(xopt)<1e-2);
+        
+        out     = CSsolver(data,n,'GPNP',pars); clc; SucRate   
+        rate(2) = rate(2) + (norm(out.sol-xopt)/norm(xopt)<1e-2); 
     end
     clc; SucRate  = [SucRate rate]  
     
     figure(1)
     set(gcf, 'Position', [1000, 200, 400 350]);
     xlab = {'s','m/n'};
-    plot(sm(1:j),SucRate/noS,'r*-','LineWidth',1), 
+    plot(sm(1:j),SucRate(1,:)/noS,'r*-'); hold on
+    plot(sm(1:j),SucRate(2,:)/noS,'bo-'); hold on
     xlabel(xlab{test}), ylabel('Success Rate') 
     axis([min(sm) max(sm) 0 1]); grid on; 
-    legend('NHTP','Location','NorthEast'); hold on, pause(0.1)
+    legend('NHTP','GPSP','Location','NorthEast'); 
+    hold on, pause(0.1)
     
 end
-
-
