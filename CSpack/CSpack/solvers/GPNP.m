@@ -131,7 +131,7 @@ for iter = 1:maxit
            subv     = my_cg(@(var)subH(var,Tu),Atb(Tu),1e-10*n,cgit,zeros(s,1));
         else 
            ATu      = data.A(:,Tu); 
-           if  s   <  2000 && m <= 2e4
+           if  s   <= 1000 && m <= 10000
                subv = (ATu'*ATu)\(bt*ATu)'; 
                eps  = 1e-10;
            else
@@ -209,8 +209,6 @@ if  fx<1e-10 && disp
     fprintf(' because of ||Ax-b|| = %5.3e!\n',sqrt(fx)); 
     fprintf(' ------------------------------------------------\n');
 end
-
-
 
 end
 
