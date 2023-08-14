@@ -1,5 +1,5 @@
 % This code demonstrates the success recovery rate in compressed sensing
-clc; clear; close all; 
+clc; clear; close all; addpath(genpath(pwd));
 
 test    = 1; % =1 (succrate v.s. s); =2 (succrate v.s. m/n)
 n       = 256; 
