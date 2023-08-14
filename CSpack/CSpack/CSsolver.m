@@ -58,6 +58,7 @@ function out = CSsolver(data,n,solver,pars)
 % Warning: Accuracy may not be guaranteed !!!!! ! 
 % =========================================================================
 
+warning off; 
 
 switch  nargin 
     case 1 
