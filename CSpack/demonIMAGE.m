@@ -1,5 +1,5 @@
 % demon sparse compressed sensing problems with image data
-clc; clear all ;close all; warning off 
+clc; clear; close all; warning off; addpath(genpath(pwd)); 
 
 Img       = phantom(64*4); % 64*4 or 64*8
 sigma     = 0.01;          % 0.05 or 0.01       
