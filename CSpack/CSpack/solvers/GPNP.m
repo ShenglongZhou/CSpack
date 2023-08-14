@@ -136,7 +136,7 @@ for iter = 1:maxit
                eps  = 1e-10;
            else
                cgit = min(20,2*iter);  
-               subv = my_cg(@(var)((ATu*var)'*ATu)',Atb(Tu),1e-30,cgit,zeros(s,1)); 
+               subv = my_cg(@(var)((ATu*var)'*ATu)',Atb(Tu),1e-20,cgit,zeros(s,1)); 
            end           
         end 
         v           = supp(subv,Tu);
