@@ -22,7 +22,8 @@ function Out = NHTP(data,n,s,pars)
 %               pars.draw    --  A graph will be drawn or not (default,1) 
 %               pars.maxit   --  Maximum number of iterations (default,2000) 
 %               pars.tol     --  Tolerance of the halting condition (default,1e-6)
-%
+%               pars.obj     --  The provided objective (default 1e-20)
+%                                Useful for noisy case.
 % Outputs:
 %     Out.sol:           The sparse solution x
 %     Out.sp:            Sparsity level of Out.sol
@@ -58,10 +59,11 @@ if  ~isfield(data,'b')
 end
 
 if nargin < 4; pars = struct([]);  end 
-if isfield(pars,'disp');   disp    = pars.disp;   else; disp    = 1;    end
-if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
-if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
-if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
+if isfield(pars,'disp');   disp  = pars.disp;  else; disp  = 1;         end
+if isfield(pars,'maxit');  itmax = pars.maxit; else; itmax = 2000;      end
+if isfield(pars,'tol');    tol   = pars.tol;   else; tol   = 1e-6;      end  
+if isfield(pars,'x0');     x0    = pars.x0;    else; x0    = zeros(n,1);end 
+if isfield(pars,'obj');    tolF  = pars.obj;   else; tolF  = 1e-20;     end
 
 if isstruct(data);  data.n = n; end
 func           = @(x,T1,T2)CS(x,T1,T2,data); 
@@ -71,7 +73,6 @@ x       = x0;
 beta    = 0.5;
 sigma   = 5e-5;
 delta   = 1e-10;
-pcgtol  = 0.1*tol*s;
 T0      = [];
 Error   = zeros(1,itmax);
 Obj     = zeros(1,itmax);
@@ -125,7 +126,7 @@ for iter = 1:itmax
     end
              
     % Stopping criteria
-    if Error(iter)<tol; break;  end
+    if Error(iter)<tol || obj <= tolF; break;  end
     
     
     % update next iterate
@@ -134,7 +135,9 @@ for iter = 1:itmax
         if ~isa(H,'function_handle')
             d   = -H\gT;
         else
-            d   = my_cg(H,-gT,pcgtol,50,zeros(s,1)); 
+            cgit  = min(50,10*iter);
+            cgtol = max(1e-6/iter,1e-20);
+            d     = my_cg(H,-gT,cgtol,cgit,zeros(s,1)); 
         end
         dg      = sum(d.*gT);
         ngT     = FNorm(gT);
@@ -154,7 +157,9 @@ for iter = 1:itmax
         if ~isa(H,'function_handle')
             d   = H\( Dx-gT);
         else
-            d   = my_cg(H,Dx-gT,pcgtol,50,zeros(s,1)); 
+            cgit  = min(50,10*iter);
+            cgtol = max(1e-6/iter,1e-20);
+            d   = my_cg(H,Dx-gT,cgtol,cgit,zeros(s,1)); 
         end
         
         Fnz     = FNorm(x(TTc))/4/eta;
@@ -170,7 +175,6 @@ for iter = 1:itmax
         end            
     end
     
-
     alpha    = 1; 
     x        = xo;    
     obj0     = obj;        
