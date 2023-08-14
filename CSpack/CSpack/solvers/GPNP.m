@@ -232,7 +232,7 @@ function [x0,sigma,J,flag,m,alpha0,gamma,thd,disp,tol,tolF,maxit]=set_parameters
         alpha0 = 5; gamma = 0.5;
     end
     
-    if s/n  <= 0.075
+    if s/n  <= 0.05
        thd   = ceil(log2(2+s)*100); 
     else
        thd   = ceil(log2(2+s)*750);
