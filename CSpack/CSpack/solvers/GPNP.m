@@ -58,7 +58,7 @@ end
 
 funhd     = isa(data.A,'function_handle'); 
 [x0,sigma,J,flag,m,alpha0,gamma,thd,disp,tol,tolF,maxit]...
-          = set_parameters(s,n,data.A,data.b,pars);
+          = set_parameters(s,n,data.b,pars);
 
 x         = x0; 
 bt        = data.b';
@@ -70,7 +70,7 @@ if  funhd
     funAtv = @(v)data.At(v);
     OBJ    = zeros(3,1);
     sub    = @(z,t)z(t,:);
-    subH   = @(z,T)(sub(At(data.A(supp(z,T))),T));         
+    subH   = @(z,T)(sub(funAtv(funAv(supp(z,T))),T));         
 else
     funAv  = @(v,T)data.A(:,T)*v; 
     if  isfield(data,'At')
@@ -125,10 +125,11 @@ for iter = 1:maxit
     mark = nnz(sT-Tx)==0;
     Tx   = sT;
     eps  = 1e-4;
-    if  mark || normg < 1e-4 || (alpha0==1 && ~funhd)
+    if  mark || normg < 1e-4  || alpha0==1 
         if funhd  
-           cgit     = min(20,5*iter);   
-           subv     = my_cg(@(var)subH(var,Tu),Atb(Tu),1e-10*n,cgit,zeros(s,1));
+           cgit     = min(50,5*iter);
+           cgtol    = max(1e-6/10^iter,1e-20);
+           subv     = my_cg(@(var)subH(var,Tu),Atb(Tu),cgtol,cgit,zeros(s,1));
         else 
            ATu      = data.A(:,Tu); 
            if  s   <= 1000 && m <= 10000
@@ -181,7 +182,7 @@ for iter = 1:maxit
         fmin = fx;  
     end
     
-    if iter  > thd 
+    if iter  > thd  
        count = std(minobj(iter-thd:iter+1) )<1e-10;
     else
        count = 0; 
@@ -219,31 +220,24 @@ function z = support(x,n, T)
 end
 
 % set parameters-------------------------------------------------------
-function [x0,sigma,J,flag,m,alpha0,gamma,thd,disp,tol,tolF,maxit]=set_parameters(s,n,A,b,pars)
+function [x0,sigma,J,flag,m,alpha0,gamma,thd,disp,tol,tolF,maxit]=set_parameters(s,n,b,pars)
     sigma     = 1e-4; 
     J         = 1;    
     m         = length(b);
     flag      = 1;
-    alpha0    = 5;
-    gamma     = 0.5;
-    funhd     = isa(A,'function_handle');  
-    if m/n   >= 1/6 && s/n <= 0.05 && n >= 1e4 && ~funhd
-       alpha0 = 1; 
-       gamma  = 0.1; 
-    elseif funhd
-       gamma  = 0.1;  
-    end
-    if s/n   <= 0.05
-       thd    = ceil(log2(2+s)*50); 
+
+	if  m/n   >= 1/6 && s/n <= 0.05 && n>=1e4
+        alpha0 = 1; gamma = 0.1;
     else
-        if  n    > 1e3 
-            thd  = 100;
-        elseif n > 500
-            thd  = 500;
-        else
-            thd  = ceil(log2(2+s)*750);
-        end
+        alpha0 = 5; gamma = 0.5;
+    end
+    
+    if s/n  <= 0.075
+       thd   = ceil(log2(2+s)*100); 
+    else
+       thd   = ceil(log2(2+s)*750);
     end   
+
     if isfield(pars,'x0');     x0   = pars.x0;    else; x0 = zeros(n,1);end 
     if isfield(pars,'disp');  disp  = pars.disp;  else; disp  = 1;      end
     if isfield(pars,'tol');   tol   = pars.tol;   else; tol   = 1e-10;  end  
@@ -251,7 +245,7 @@ function [x0,sigma,J,flag,m,alpha0,gamma,thd,disp,tol,tolF,maxit]=set_parameters
     if isfield(pars,'maxit')
         maxit = pars.maxit;  
     else 
-        maxit = (n<=1e3)*1e4 + (n>1e3)*5e3; 
+        maxit = (n<=1e4)*2e4 + (n>1e4)*5e3; 
     end   
 end
 
@@ -274,5 +268,4 @@ function x = my_cg(fx,rhs,cgtol,cgit,x)
         e0 = e;
         e  = sum(r.*r);
     end       
-    
 end
