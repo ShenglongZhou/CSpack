@@ -1,5 +1,5 @@
 % demon compressed sensing problems with random data 
-clc; clear; close all;
+clc; clear; close all; addpath(genpath(pwd));
 
 n       = 20000;  
 m       = ceil(0.25*n); 
