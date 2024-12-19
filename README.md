@@ -28,4 +28,4 @@ To implement this solver, please
     A Null-space-based weighted l1 minimization approach to compressed sensing, 
     Information and Inference: A Journal of the IMA, vol. 5(1): 76-102, 2016.
 
-Please give credit to them if you use the code for your research.
+Please credit them if you use the code for your research.
