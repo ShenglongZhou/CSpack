@@ -17,7 +17,7 @@ end
 data.b  = data.A(:,I)*xopt(I);  
 
 % choose one of the following four solvers  
-t       = 2; 
+t       = 1; 
 solver  = {'NHTP', 'GPNP', 'IIHT', 'NL0R', 'MIRL1'};
 pars.s  = s; % required for solvers 'NHTP'，'GPNP', and 'IIHT' 
 out     = CSsolver(data,n,solver{t},pars); 
