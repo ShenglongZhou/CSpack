@@ -125,7 +125,7 @@ for iter = 1:maxit
     mark = nnz(sT-Tx)==0;
     Tx   = sT;
     eps  = 1e-4;
-    if  mark || normg < 1e-4  || alpha0==1 
+    if ( mark || normg < 1e-4  || alpha0==1 ) && s<=5e4
         if funhd  
            cgit     = min(50,5*iter);
            cgtol    = max(1e-6/10^iter,1e-20);
@@ -136,7 +136,11 @@ for iter = 1:maxit
                subv = (ATu'*ATu)\(bt*ATu)'; 
                eps  = 1e-10;
            else
-               cgit = min(20,2*iter);  
+               if  issparse(data.A)
+                   cgit = 30+(s/n>=0.05)*20+(s/n>=0.1)*20;  
+               else
+                   cgit = min(20,2*iter);  
+               end
                subv = my_cg(@(var)((ATu*var)'*ATu)',Atb(Tu),1e-20,cgit,zeros(s,1)); 
            end           
         end 
@@ -269,5 +273,3 @@ function x = my_cg(fx,b,cgtol,cgit,x)
         p  = r + (e/e0)*p;
     end 
 end
-
-
