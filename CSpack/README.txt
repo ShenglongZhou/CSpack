@@ -3,7 +3,7 @@ To implement this solver, please
     Step 1. run startup.m first to add the path 
     Step 2. run demonXXXX.m to solve different problems
 
-This package contains 4 solvers for compressive sensing problems 
+This package contains 5 solvers for compressive sensing problems 
 based on the algorithms described in the following papers:
 
 NHTP------------------------------------------------------------------------
@@ -27,7 +27,7 @@ MIRL1-----------------------------------------------------------------------
     A Null-space-based weighted  l1 minimization approach to compressed sensing, 
     Information and Inference: A Journal of the IMA, vol. 5(1): 76-102, 2016.
 
-Please give credit to them if you use the code for your research.
+Please credit them if you use the code for your research.
 
 ===========================================================================
 % This solver solves compressive sensing (CS) in one of the following forms:
@@ -86,7 +86,7 @@ Please give credit to them if you use the code for your research.
 %     out.obj:   Objective function value at Out.sol 
 % =========================================================================
 % Send your comments and suggestions to <slzhou2021@163.com> 
-% Warning: Accuracy may not be guaranteed !!!!! ! 
+% Warning: Accuracy may not be guaranteed !!!!!! 
 % =========================================================================
 
 % Below is one example that you can run
