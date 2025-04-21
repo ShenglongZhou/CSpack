@@ -3,7 +3,7 @@ To implement this solver, please
     Step 1. run startup.m first to add the path 
     Step 2. run demonXXXX.m to solve different problems
 
-This package contains 5 solvers for compressive sensing problems 
+This package contains 6 solvers for compressive sensing problems 
 based on the algorithms described in the following papers:
 
 NHTP------------------------------------------------------------------------
