@@ -19,20 +19,15 @@ for j       = 1:length(sm)
     case 1; s   = sm(j);
     case 2; m   = ceil(sm(j)*n);
     end    
-    for S       = 1:noS         
-        A       = randn(m,n);
-        I0      = randperm(n); 
-        I       = I0(1:s);
+    for S       = 1:noS       
+        I      = randperm(n,s); 
         xopt    = zeros(n,1);
         xopt(I) = randn(s,1); 
-        data.A  = normalization(A, 3);              
-        data.b  = data.A(:,I)*xopt(I);   
-        
-        pars.s  = s;
-        out     = CSsolver(data,n,'NHTP',pars); clc; SucRate   
+        A       = normalization(randn(m,n), 3);              
+        b       = A(:,I)*xopt(I);   
+        out     = CSsolver(A,[],b,n,s,'NHTP',pars); clc; SucRate   
         rate(1) = rate(1) + (norm(out.sol-xopt)/norm(xopt)<1e-2);
-        
-        out     = CSsolver(data,n,'GPNP',pars); clc; SucRate   
+        out     = CSsolver(A,[],b,n,s,'GPNP',pars); clc; SucRate   
         rate(2) = rate(2) + (norm(out.sol-xopt)/norm(xopt)<1e-2); 
     end
     clc; SucRate  = [SucRate rate]  
@@ -45,6 +40,5 @@ for j       = 1:length(sm)
     xlabel(xlab{test}), ylabel('Success Rate') 
     axis([min(sm) max(sm) 0 1]); grid on; 
     legend('NHTP','GPSP','Location','NorthEast'); 
-    hold on, pause(0.1)
-    
+    hold on, pause(0.1)    
 end
