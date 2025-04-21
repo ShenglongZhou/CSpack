@@ -1,5 +1,4 @@
 function RecoverShow(xo,x,pos,ind)
-
     figure('Renderer', 'painters', 'Position', pos)
     axes('Position', [0.05 0.1 0.9 0.8] );
     stem(find(xo),xo(xo~=0),'bo-','MarkerSize',6, 'LineWidth',1),hold on
@@ -10,12 +9,10 @@ function RecoverShow(xo,x,pos,ind)
     if nnz(xx>0)>0, ymax= max(xx(xx>0))+0.1; end   
     axis([1 length(x)  ymin  ymax])
     if ind
-       snr   = norm(x-xo)/norm(x);
-       st1   = strcat('Recovery accuracy = ',num2str(snr,4));         
+       snr   = (1-norm(x-xo)^2/norm(x)^2)*100;
+       st1   = strcat('Recovery accuracy = ',num2str(snr,4),'%');         
        title(strcat(st1))
        set(0,'DefaultAxesTitleFontWeight','normal');
-
        legend('Ground-Truth', 'Recovered', 'Location', 'best')
     end
 end
-
